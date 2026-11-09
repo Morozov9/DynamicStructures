@@ -1,0 +1,15 @@
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\bin\Debug\net10.0\DynamicStructures.exe
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\bin\Debug\net10.0\DynamicStructures.deps.json
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\bin\Debug\net10.0\DynamicStructures.runtimeconfig.json
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\bin\Debug\net10.0\DynamicStructures.dll
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\bin\Debug\net10.0\DynamicStructures.pdb
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.AssemblyInfoInputs.cache
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.AssemblyInfo.cs
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.csproj.CoreCompileInputs.cache
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.sourcelink.json
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.dll
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\refint\DynamicStructures.dll
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.pdb
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\DynamicStructures.genruntimeconfig.cache
+c:\Users\ldruz\Documents\antigravity\blissful-darwin\DynamicStructures\DynamicStructures\obj\Debug\net10.0\ref\DynamicStructures.dll
