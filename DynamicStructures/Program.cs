@@ -11,6 +11,7 @@ using DynamicStructures.Part4_LinkedListAlgos;
 // ═══════════════════════════════════════════════════════════════════════
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
+Console.InputEncoding = System.Text.Encoding.UTF8;
 
 bool running = true;
 while (running)
@@ -18,6 +19,7 @@ while (running)
     PrintMenu();
     Console.Write("Выберите раздел: ");
     string? input = Console.ReadLine();
+    if (input is null) break;
 
     if (!int.TryParse(input, out int choice))
     {
@@ -25,48 +27,60 @@ while (running)
         continue;
     }
 
-    switch (choice)
+    try
     {
-        case 1:
-            StackRunner.Run();
-            break;
+        switch (choice)
+        {
+            case 1:
+                StackRunner.Run();
+                break;
 
-        case 2:
-            QueueRunner.Run();
-            break;
+            case 2:
+                QueueRunner.Run();
+                break;
 
-        case 3:
-            Part3Runner.Run();
-            break;
+            case 3:
+                Part3Runner.Run();
+                break;
 
-        case 4:
-            Part4Runner.Run();
-            break;
+            case 4:
+                Part4Runner.Run();
+                break;
 
-        case 5:
-            ApplicationsRunner.Run();
-            break;
+            case 5:
+                ApplicationsRunner.Run();
+                break;
 
-        case 0:
-            running = false;
-            Console.WriteLine("\nДо свидания!");
-            break;
+            case 0:
+                running = false;
+                Console.WriteLine("\nДо свидания!");
+                break;
 
-        default:
-            Console.WriteLine("  Неверный выбор. Введите 0–5.\n");
-            break;
+            default:
+                Console.WriteLine("  Неверный выбор. Введите 0–5.\n");
+                break;
+        }
+    }
+    catch (EndOfStreamException)
+    {
+        break;
+    }
+    catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or FormatException or ArithmeticException)
+    {
+        Console.WriteLine($"\n  Ошибка: {ex.Message}");
     }
 
     if (running)
     {
         Console.WriteLine("\nНажмите Enter для возврата в меню...");
-        Console.ReadLine();
+        if (Console.ReadLine() is null) break;
     }
 }
 
 static void PrintMenu()
 {
-    try { Console.Clear(); } catch { /* не все среды поддерживают Clear */ }
+    if (!Console.IsOutputRedirected)
+        try { Console.Clear(); } catch (IOException) { /* среда не поддерживает Clear */ }
     const int W = 58;
     static string Line(string text) => "║" + text.PadRight(W) + "║";
     Console.WriteLine("╔" + new string('═', W) + "╗");
@@ -76,7 +90,7 @@ static void PrintMenu()
     Console.WriteLine(Line("  2 — Часть 2: Очередь (своя + Queue<T>)"));
     Console.WriteLine(Line("  3 — Часть 1, п.4: Постфиксные вычисления"));
     Console.WriteLine(Line("  4 — Часть 4: Алгоритмы связных списков"));
-    Console.WriteLine(Line("  5 — Часть 3: Применение структур (Иосиф, Flood Fill)"));
+    Console.WriteLine(Line("  5 — Часть 3: Применение списка, очереди, стека, дерева"));
     Console.WriteLine(Line("  0 — Выход"));
     Console.WriteLine("╚" + new string('═', W) + "╝");
 }

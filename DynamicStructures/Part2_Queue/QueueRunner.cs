@@ -34,7 +34,7 @@ public static class QueueRunner
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
-            switch (Console.ReadLine()?.Trim())
+            switch (ConsoleInput.ReadLine().Trim())
             {
                 case "1": RunFromFile(); break;
                 case "2": RunBenchmark(); break;

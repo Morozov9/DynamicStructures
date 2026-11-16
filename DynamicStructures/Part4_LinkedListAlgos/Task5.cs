@@ -32,20 +32,12 @@ public static class Task5
 
         if (insertAfter is null) return; // x не найден
 
-        // Запоминаем, что стоит после x (туда воткнём конец копии)
-        ListNode? afterX = insertAfter.Next;
-
-        // Копируем весь список и вставляем после insertAfter
-        // Копируем поузлово
-        var src = list.Head;
-        ListNode? insertPoint = insertAfter;
-        while (src is not null)
-        {
-            var newNode = new ListNode(src.Value) { Next = afterX };
-            insertPoint!.Next = newNode;
-            insertPoint = newNode;
-            src = src.Next;
-        }
-        // insertPoint.Next уже указывает на afterX — хвост сшит
+        // Копируем до изменения исходных ссылок, иначе обход попадёт в новые узлы.
+        var copy = list.Clone();
+        var tail = copy.Head!;
+        while (tail.Next is not null)
+            tail = tail.Next;
+        tail.Next = insertAfter.Next;
+        insertAfter.Next = copy.Head;
     }
 }

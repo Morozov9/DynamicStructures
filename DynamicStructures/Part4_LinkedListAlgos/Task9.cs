@@ -6,10 +6,27 @@ namespace DynamicStructures.Part4_LinkedListAlgos;
 /// </summary>
 public static class Task9
 {
-    /// <summary>Дописывает список e в конец списка l.</summary>
+    /// <summary>
+    /// Дописывает независимую копию e в конец l; e не изменяется.
+    /// Допускается передать один и тот же список. Время O(|l| + |e|), память O(|e|).
+    /// </summary>
     public static void AppendList(MyLinkedList l, MyLinkedList e)
     {
-        // TODO: реализовать дописывание списка e к списку l
-        throw new NotImplementedException("Задача 9 ещё не реализована.");
+        ArgumentNullException.ThrowIfNull(l);
+        ArgumentNullException.ThrowIfNull(e);
+
+        // Сначала завершаем копирование: l и e могут быть одним списком.
+        var copy = e.Clone();
+        if (copy.IsEmpty) return;
+        if (l.Head is null)
+        {
+            l.Head = copy.Head;
+            return;
+        }
+
+        var tail = l.Head;
+        while (tail.Next is not null)
+            tail = tail.Next;
+        tail.Next = copy.Head;
     }
 }

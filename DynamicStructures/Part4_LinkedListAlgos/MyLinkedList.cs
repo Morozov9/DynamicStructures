@@ -110,5 +110,17 @@ public class MyLinkedList
     }
 
     /// <summary>Создать независимую копию списка (deep copy).</summary>
-    public MyLinkedList Clone() => new MyLinkedList(ToArray());
+    public MyLinkedList Clone()
+    {
+        var copy = new MyLinkedList();
+        ListNode? tail = null;
+        for (var source = Head; source is not null; source = source.Next)
+        {
+            var node = new ListNode(source.Value);
+            if (tail is null) copy.Head = node;
+            else tail.Next = node;
+            tail = node;
+        }
+        return copy;
+    }
 }

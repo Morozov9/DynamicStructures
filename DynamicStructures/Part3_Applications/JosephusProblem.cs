@@ -75,9 +75,11 @@ public static class JosephusProblem
     /// <summary>Контроль: то же решение по рекуррентной формуле J(1)=0, J(i)=(J(i-1)+k) mod i. O(n), без списка.</summary>
     public static int SolveByFormula(int n, int k)
     {
+        if (n < 1) throw new ArgumentOutOfRangeException(nameof(n), "n должно быть ≥ 1.");
+        if (k < 1) throw new ArgumentOutOfRangeException(nameof(k), "k должно быть ≥ 1.");
         int j = 0;
-        for (int i = 2; i <= n; i++)
-            j = (j + k) % i;
+        for (long i = 2; i <= n; i++)
+            j = (int)(((long)j + k) % i);
         return j + 1;
     }
 

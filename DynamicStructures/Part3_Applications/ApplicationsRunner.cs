@@ -6,6 +6,8 @@ namespace DynamicStructures.Part3_Applications;
 /// Часть 3: примеры применения динамических структур данных.
 ///   Список  — задача Иосифа Флавия (кольцевой список).
 ///   Очередь — заливка краской Flood Fill (поиск в ширину на LinkedQueue).
+///   Стек   — разрешение файловых путей.
+///   Дерево — выбор решения по ответам «да/нет».
 /// </summary>
 public static class ApplicationsRunner
 {
@@ -29,16 +31,20 @@ public static class ApplicationsRunner
             Console.WriteLine("  1 — Список:  задача Иосифа Флавия (решение)");
             Console.WriteLine("  2 — Список:  Иосиф Флавий — автопроверка списка по формуле");
             Console.WriteLine("  3 — Очередь: заливка краской (Flood Fill)");
+            Console.WriteLine("  4 — Стек: разрешение файловых путей");
+            Console.WriteLine("  5 — Дерево: дерево решений (выбор транспорта)");
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
-            switch (Console.ReadLine()?.Trim())
+            switch (ConsoleInput.ReadLine().Trim())
             {
                 case "1": RunJosephus(); break;
                 case "2": RunJosephusSelfCheck(); break;
                 case "3": RunFloodFill(); break;
+                case "4": RunFilePathResolver(); break;
+                case "5": RunDecisionTree(); break;
                 case "0": back = true; break;
-                default: Console.WriteLine("  Введите число от 0 до 3."); break;
+                default: Console.WriteLine("  Введите число от 0 до 5."); break;
             }
         }
     }
@@ -49,8 +55,8 @@ public static class ApplicationsRunner
     {
         Console.WriteLine("\n  ── Задача Иосифа Флавия ──");
         Console.WriteLine("  n человек стоят по кругу, каждого k-го выводят из круга, пока не останется один.");
-        int n = ReadInt("  Количество человек n (Enter = 7): ", 7, 1, 1_000_000);
-        int k = ReadInt("  Шаг k (Enter = 3): ", 3, 1, 1_000_000);
+        int n = ConsoleInput.ReadInt("  Количество человек n (Enter = 7): ", 7, 1, 1_000_000);
+        int k = ConsoleInput.ReadInt("  Шаг k (Enter = 3): ", 3, 1, 1_000_000);
 
         Console.WriteLine();
         bool verbose = n <= 15;
@@ -106,7 +112,7 @@ public static class ApplicationsRunner
         string[] lines;
         try
         {
-            lines = File.ReadAllLines(path).Where(l => l.Length > 0).ToArray();
+            lines = File.ReadAllLines(path);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
@@ -114,7 +120,7 @@ public static class ApplicationsRunner
             return;
         }
 
-        if (lines.Length == 0)
+        if (lines.Length == 0 || lines.All(l => l.Length == 0))
         {
             Console.WriteLine("  Файл пуст.");
             return;
@@ -125,17 +131,25 @@ public static class ApplicationsRunner
 
         int rows = lines.Length;
         int cols = lines.Max(l => l.Length);
-        int row = ReadInt($"\n  Строка стартовой клетки (1..{rows}, Enter = 2): ", 2, 1, rows) - 1;
-        int col = ReadInt($"  Столбец стартовой клетки (1..{cols}, Enter = 2): ", 2, 1, cols) - 1;
+        int defaultRow = Math.Min(2, rows);
+        int defaultCol = Math.Min(2, cols);
+        int row = ConsoleInput.ReadInt($"\n  Строка стартовой клетки (1..{rows}, Enter = {defaultRow}): ", defaultRow, 1, rows) - 1;
+        int col = ConsoleInput.ReadInt($"  Столбец стартовой клетки (1..{cols}, Enter = {defaultCol}): ", defaultCol, 1, cols) - 1;
         if (col >= lines[row].Length)
         {
             Console.WriteLine("  В этой строке нет такого столбца.");
             return;
         }
 
-        Console.Write("  Новый цвет — один символ (Enter = '*'): ");
-        string? colorInput = Console.ReadLine();
-        char color = string.IsNullOrEmpty(colorInput) ? '*' : colorInput[0];
+        char color;
+        while (true)
+        {
+            Console.Write("  Новый цвет — один символ (Enter = '*'): ");
+            string colorInput = ConsoleInput.ReadLine();
+            if (colorInput.Length == 0) { color = '*'; break; }
+            if (colorInput.Length == 1) { color = colorInput[0]; break; }
+            Console.WriteLine("  Укажите ровно один символ.");
+        }
 
         // 1) обычная заливка
         char[][] grid = ToGrid(lines);
@@ -173,15 +187,35 @@ public static class ApplicationsRunner
         }
     }
 
-    private static int ReadInt(string prompt, int defaultValue, int min, int max)
+    private static void RunFilePathResolver()
     {
-        while (true)
+        Console.WriteLine("\n  ── Разрешение файловых путей через LinkedStack ──");
+        Console.WriteLine("  «.» — текущая папка, «..» — родительская. Файлы не открываются.");
+        Console.WriteLine("  Поддерживаются пути Windows, UNC и Unix; относительные пути остаются относительными.");
+        const string sample = @"C:\Users\Student\Documents\..\Projects\.\report.txt";
+        Console.WriteLine($"  Пример: {sample}");
+        Console.Write("  Путь (Enter — пример): ");
+        string path = ConsoleInput.ReadLine().Trim().Trim('"');
+        if (path.Length == 0) path = sample;
+        try
         {
-            Console.Write(prompt);
-            string? s = Console.ReadLine()?.Trim();
-            if (string.IsNullOrEmpty(s)) return defaultValue;
-            if (int.TryParse(s, out int v) && v >= min && v <= max) return v;
-            Console.WriteLine($"  Введите целое число от {min} до {max}.");
+            string resolved = FilePathResolver.Resolve(path, step => Console.WriteLine($"  {step}"));
+            Console.WriteLine($"  Результат: {resolved}");
         }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"  Ошибка пути: {ex.Message}");
+        }
+    }
+
+    private static void RunDecisionTree()
+    {
+        Console.WriteLine("\n  ── Дерево решений: выбор транспорта ──");
+        Console.WriteLine("  Внутренние узлы — вопросы, листья — решения. На каждом шаге выбирается одна ветвь.\n");
+        var tree = DecisionTree.CreateTransportExample();
+        tree.Print();
+        Console.WriteLine();
+        string result = tree.Evaluate(ConsoleInput.ReadYesNo);
+        Console.WriteLine($"\n  Решение: {result}");
     }
 }

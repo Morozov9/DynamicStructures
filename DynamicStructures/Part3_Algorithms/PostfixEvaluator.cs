@@ -40,6 +40,7 @@ public static class PostfixEvaluator
     /// <exception cref="ArithmeticException">Недопустимая операция (деление на 0, ln от x ≤ 0, sqrt от x &lt; 0 и т.п.).</exception>
     public static double Evaluate(string expression, out long stackOps)
     {
+        ArgumentNullException.ThrowIfNull(expression);
         var stack = new LinkedStack<double>();
         long ops = 0;
         string[] tokens = expression.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
@@ -51,6 +52,7 @@ public static class PostfixEvaluator
         {
             if (TryParseNumber(token, out double number))
             {
+                CheckResult(number, token);
                 stack.Push(number);
                 ops++;
             }
@@ -138,8 +140,8 @@ public static class PostfixEvaluator
     private static bool TryParseNumber(string token, out double value)
     {
         value = 0;
-        // Число обязано заканчиваться цифрой: так отсекаются "-", "+", "NaN", "Infinity"
-        if (!char.IsDigit(token[^1])) return false;
+        // Число начинается с цифры, знака или дробного разделителя; NaN/Infinity — не числа ввода.
+        if (!char.IsDigit(token[0]) && token[0] is not ('+' or '-' or '.' or ',')) return false;
 
         string t = token.Contains(',') ? token.Replace(',', '.') : token;
         return double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out value);

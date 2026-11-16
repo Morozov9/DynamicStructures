@@ -8,8 +8,6 @@ public static class Task11
     /// <summary>Приписывает в конец списка его копию.</summary>
     public static void DoubleList(MyLinkedList list)
     {
-        // TODO: реализовать удвоение списка
-        // Важно: не создавать бесконечный цикл — копировать только оригинальные узлы
-        throw new NotImplementedException("Задача 11 ещё не реализована.");
+        Task9.AppendList(list, list);
     }
 }

@@ -1,5 +1,7 @@
 using DynamicStructures.Part1_Stack;
 
+using System.Globalization;
+
 namespace DynamicStructures.Part3_Algorithms;
 
 /// <summary>
@@ -50,6 +52,7 @@ public static class InfixToPostfix
     /// <exception cref="FormatException">Некорректное выражение (скобки, пропущенный оператор/операнд, неизвестный символ).</exception>
     public static string Convert(string expression)
     {
+        ArgumentNullException.ThrowIfNull(expression);
         List<string> tokens = Tokenize(expression);
         if (tokens.Count == 0)
             throw new FormatException("Выражение пусто.");
@@ -147,7 +150,8 @@ public static class InfixToPostfix
     }
 
     private static bool IsNumber(string token)
-        => token.Length > 0 && char.IsDigit(token[0]) && char.IsDigit(token[^1]);
+        => double.TryParse(token, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double value)
+           && double.IsFinite(value);
 
     /// <summary>
     /// Разбивает выражение на токены, поддерживая запись с пробелами и без («(2+3)*4»).
@@ -165,13 +169,16 @@ public static class InfixToPostfix
             if (char.IsWhiteSpace(ch)) { i++; continue; }
 
             // Число (целое или дробное; разделитель '.' или ',')
-            if (char.IsDigit(ch))
+            if (char.IsDigit(ch) || ch is '.' or ',')
             {
                 int start = i++;
                 while (i < expression.Length
                        && (char.IsDigit(expression[i]) || expression[i] == '.' || expression[i] == ','))
                     i++;
-                tokens.Add(expression[start..i].Replace(',', '.'));
+                string number = expression[start..i].Replace(',', '.');
+                if (!IsNumber(number))
+                    throw new FormatException($"Некорректное число: '{expression[start..i]}'.");
+                tokens.Add(number);
                 continue;
             }
 

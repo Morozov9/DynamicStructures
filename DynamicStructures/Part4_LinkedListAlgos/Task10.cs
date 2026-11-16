@@ -12,7 +12,15 @@ public static class Task10
     /// <returns>Второй список (после x).</returns>
     public static MyLinkedList SplitAtFirst(MyLinkedList l, int x)
     {
-        // TODO: реализовать разбивку списка по первому вхождению x
-        throw new NotImplementedException("Задача 10 ещё не реализована.");
+        ArgumentNullException.ThrowIfNull(l);
+        var second = new MyLinkedList();
+        for (var current = l.Head; current is not null; current = current.Next)
+        {
+            if (current.Value != x) continue;
+            second.Head = current.Next;
+            current.Next = null;
+            break;
+        }
+        return second;
     }
 }

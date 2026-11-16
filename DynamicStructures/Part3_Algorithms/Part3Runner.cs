@@ -33,7 +33,7 @@ public static class Part3Runner
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
-            switch (Console.ReadLine()?.Trim())
+            switch (ConsoleInput.ReadLine().Trim())
             {
                 case "1": RunPostfixEvaluator(); break;
                 case "2": RunInfixToPostfix(convertOnly: true); break;

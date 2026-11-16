@@ -2,7 +2,7 @@ namespace DynamicStructures.Common;
 
 /// <summary>
 /// Работа с входными файлами. Все файлы лежат в папке TestData рядом с exe
-/// (bin\Debug\net10.0\TestData\...): Stack\input.txt, Queue\input.txt, Postfix\input.txt, Infix\input.txt.
+/// (bin\Debug\net10.0\TestData\...); для каждой задачи — свой подраздел.
 /// Если файла нет, создаётся пример.
 /// </summary>
 public static class DataFiles
@@ -34,7 +34,7 @@ public static class DataFiles
     {
         Console.WriteLine($"  Файл по умолчанию: {defaultPath}");
         Console.Write("  Путь к другому файлу (Enter — по умолчанию): ");
-        string? s = Console.ReadLine()?.Trim().Trim('"');
+        string s = ConsoleInput.ReadLine().Trim().Trim('"');
         return string.IsNullOrEmpty(s) ? defaultPath : s;
     }
 }
