@@ -1,9 +1,9 @@
-namespace DynamicStructures.Part4_LinkedListAlgos;
+﻿namespace DynamicStructures.Part4_LinkedListAlgos;
 
 /// <summary>
 /// Запуск демонстрации задач части 4 (алгоритмы над связными списками).
-/// Задачи 1–4, 9–12: заглушки (NotImplementedException).
-/// Задачи 5–8: полностью реализованы.
+/// Задачи 9–12: заглушки (NotImplementedException).
+/// Задачи 1–8: реализованы.
 /// </summary>
 public static class Part4Runner
 {
@@ -13,9 +13,9 @@ public static class Part4Runner
         Console.WriteLine("║   Часть 4: Алгоритмы связных списков        ║");
         Console.WriteLine("╚══════════════════════════════════════════════╝\n");
 
-        Console.WriteLine("  [1–4] Не реализованы (заглушки для коллег)");
-        Console.WriteLine("  [5–8] Реализованы полностью\n");
-        Console.WriteLine("  Выберите задачу (5–8) или 0 для выхода:\n");
+        Console.WriteLine("  [1–8]  Реализованы");
+        Console.WriteLine("  [9–12] Не реализованы (заглушки для коллег)\n");
+        Console.WriteLine("  Выберите задачу (1–8) или 0 для выхода:\n");
 
         bool running = true;
         while (running)
@@ -30,13 +30,11 @@ public static class Part4Runner
                     running = false;
                     break;
 
-                // ── Заглушки ────────────────────────────────────────────────
-                case 1: TryRunStub("Задача 1: Переворот списка", () => Task1.Reverse(new MyLinkedList())); break;
-                case 2: TryRunStub("Задача 2: Перенос элемента", () => Task2.MoveLastToFirst(new MyLinkedList())); break;
-                case 3: TryRunStub("Задача 3: Количество различных", () => Task3.CountDistinct(new MyLinkedList())); break;
-                case 4: TryRunStub("Задача 4: Удаление неуникальных", () => Task4.RemoveDuplicates(new MyLinkedList())); break;
-
                 // ── Реализованные задачи ─────────────────────────────────────
+                case 1: RunTask1(); break;
+                case 2: RunTask2(); break;
+                case 3: RunTask3(); break;
+                case 4: RunTask4(); break;
                 case 5: RunTask5(); break;
                 case 6: RunTask6(); break;
                 case 7: RunTask7(); break;
@@ -53,6 +51,71 @@ public static class Part4Runner
                     break;
             }
         }
+    }
+
+    // ── Задача 1 ─────────────────────────────────────────────────────────────
+
+    private static void RunTask1()
+    {
+        Console.WriteLine("\n  ── Задача 1: Переворот списка ──────────────────");
+        var list = new MyLinkedList(new[] { 1, 2, 3, 4, 5 });
+        list.Print("До     ");
+        Task1.Reverse(list);
+        list.Print("После  ");
+        Console.WriteLine("  Ожидается: 5 → 4 → 3 → 2 → 1\n");
+
+        var single = new MyLinkedList(new[] { 7 });
+        Task1.Reverse(single);
+        single.Print("Один элемент");
+
+        var empty = new MyLinkedList();
+        Task1.Reverse(empty);
+        empty.Print("Пустой список");
+        Console.WriteLine();
+    }
+
+    // ── Задача 2 ─────────────────────────────────────────────────────────────
+
+    private static void RunTask2()
+    {
+        Console.WriteLine("\n  ── Задача 2: Перенос последнего/первого элемента ──");
+        var list = new MyLinkedList(new[] { 1, 2, 3, 4, 5 });
+        list.Print("До (последний → в начало)");
+        Task2.MoveLastToFirst(list);
+        list.Print("После                    ");
+        Console.WriteLine("  Ожидается: 5 → 1 → 2 → 3 → 4\n");
+
+        var list2 = new MyLinkedList(new[] { 1, 2, 3, 4, 5 });
+        list2.Print("До (первый → в конец)");
+        Task2.MoveFirstToLast(list2);
+        list2.Print("После                ");
+        Console.WriteLine("  Ожидается: 2 → 3 → 4 → 5 → 1\n");
+    }
+
+    // ── Задача 3 ─────────────────────────────────────────────────────────────
+
+    private static void RunTask3()
+    {
+        Console.WriteLine("\n  ── Задача 3: Количество различных элементов ────");
+        var list = new MyLinkedList(new[] { 1, 2, 1, 3, 2, 4, 4 });
+        list.Print("Список");
+        Console.WriteLine($"  Различных элементов: {Task3.CountDistinct(list)}");
+        Console.WriteLine("  Ожидается: 4\n");
+
+        var empty = new MyLinkedList();
+        Console.WriteLine($"  Пустой список: {Task3.CountDistinct(empty)} (ожидается 0)\n");
+    }
+
+    // ── Задача 4 ─────────────────────────────────────────────────────────────
+
+    private static void RunTask4()
+    {
+        Console.WriteLine("\n  ── Задача 4: Удаление неуникальных элементов ───");
+        var list = new MyLinkedList(new[] { 1, 2, 1, 3, 2, 4, 4, 1 });
+        list.Print("До     ");
+        Task4.RemoveDuplicates(list);
+        list.Print("После  ");
+        Console.WriteLine("  Ожидается: 1 → 2 → 3 → 4\n");
     }
 
     // ── Задача 5 ─────────────────────────────────────────────────────────────

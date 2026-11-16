@@ -18,19 +18,26 @@ public class ListNode
 /// <summary>
 /// Собственная реализация односвязного списка целых чисел.
 /// Используется во всех задачах части 4.
+/// Количество элементов не хранится отдельным полем, а считается обходом списка,
+/// поэтому остаётся верным, даже если алгоритмы меняют ссылки (Head/Next) напрямую.
 /// </summary>
 public class MyLinkedList
 {
     public ListNode? Head { get; set; }
-    private int _count;
 
     public MyLinkedList() { }
 
     /// <summary>Создать список из массива значений.</summary>
     public MyLinkedList(IEnumerable<int> values)
     {
+        ListNode? tail = null;
         foreach (int v in values)
-            AddLast(v);
+        {
+            var node = new ListNode(v);
+            if (tail is null) Head = node;
+            else tail.Next = node;
+            tail = node;
+        }
     }
 
     /// <summary>Добавить элемент в конец списка.</summary>
@@ -40,27 +47,31 @@ public class MyLinkedList
         if (Head is null)
         {
             Head = node;
+            return;
         }
-        else
-        {
-            var current = Head;
-            while (current.Next is not null)
-                current = current.Next;
-            current.Next = node;
-        }
-        _count++;
+
+        var current = Head;
+        while (current.Next is not null)
+            current = current.Next;
+        current.Next = node;
     }
 
     /// <summary>Добавить элемент в начало списка.</summary>
     public void AddFirst(int value)
     {
-        var node = new ListNode(value) { Next = Head };
-        Head = node;
-        _count++;
+        Head = new ListNode(value) { Next = Head };
     }
 
-    /// <summary>Количество элементов.</summary>
-    public int Count => _count;
+    /// <summary>Количество элементов (подсчёт обходом списка, O(n)).</summary>
+    public int Count
+    {
+        get
+        {
+            int n = 0;
+            for (var cur = Head; cur is not null; cur = cur.Next) n++;
+            return n;
+        }
+    }
 
     /// <summary>Пуст ли список.</summary>
     public bool IsEmpty => Head is null;
@@ -92,26 +103,12 @@ public class MyLinkedList
     /// <summary>Преобразовать в массив.</summary>
     public int[] ToArray()
     {
-        var result = new int[_count];
-        var current = Head;
-        for (int i = 0; i < _count; i++)
-        {
-            result[i] = current!.Value;
-            current = current.Next;
-        }
-        return result;
+        var result = new List<int>();
+        for (var cur = Head; cur is not null; cur = cur.Next)
+            result.Add(cur.Value);
+        return result.ToArray();
     }
 
     /// <summary>Создать независимую копию списка (deep copy).</summary>
-    public MyLinkedList Clone()
-    {
-        var clone = new MyLinkedList();
-        var current = Head;
-        while (current is not null)
-        {
-            clone.AddLast(current.Value);
-            current = current.Next;
-        }
-        return clone;
-    }
+    public MyLinkedList Clone() => new MyLinkedList(ToArray());
 }

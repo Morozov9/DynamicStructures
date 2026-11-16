@@ -7,13 +7,23 @@ namespace DynamicStructures.Part4_LinkedListAlgos;
 public static class Task1
 {
     /// <summary>
-    /// Переворачивает список на месте (меняет ссылки, не создаёт новый список).
+    /// Переворачивает список на месте (меняет ссылки, новые узлы не создаются).
+    /// Сложность: O(n) по времени, O(1) по памяти.
     /// </summary>
     /// <param name="list">Список для переворота.</param>
     public static void Reverse(MyLinkedList list)
     {
-        // TODO: реализовать алгоритм переворота связного списка
-        // Подсказка: три указателя — prev, current, next
-        throw new NotImplementedException("Задача 1 ещё не реализована.");
+        ListNode? prev = null;
+        ListNode? current = list.Head;
+
+        while (current is not null)
+        {
+            ListNode? next = current.Next; // запоминаем следующий узел
+            current.Next = prev;           // разворачиваем ссылку назад
+            prev = current;                // сдвигаем prev
+            current = next;                // сдвигаем current
+        }
+
+        list.Head = prev; // prev указывает на бывший последний узел
     }
 }
