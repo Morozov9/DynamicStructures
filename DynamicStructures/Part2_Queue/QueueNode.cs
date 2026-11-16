@@ -1,7 +1,7 @@
 namespace DynamicStructures.Part2_Queue;
 
 /// <summary>
-/// Узел двусвязного списка для реализации очереди.
+/// Узел односвязного списка для реализации очереди.
 /// </summary>
 /// <typeparam name="T">Тип хранимого значения.</typeparam>
 public class QueueNode<T>

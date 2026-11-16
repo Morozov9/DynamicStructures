@@ -1,4 +1,4 @@
-using DynamicStructures.Part1_Stack;
+﻿using DynamicStructures.Part1_Stack;
 using DynamicStructures.Part2_Queue;
 using DynamicStructures.Part3_Algorithms;
 using DynamicStructures.Part4_LinkedListAlgos;
@@ -62,13 +62,15 @@ while (running)
 static void PrintMenu()
 {
     try { Console.Clear(); } catch { /* не все среды поддерживают Clear */ }
-    Console.WriteLine("╔══════════════════════════════════════════════════════╗");
-    Console.WriteLine("║    Практическое занятие №3: Динамические структуры   ║");
-    Console.WriteLine("╠══════════════════════════════════════════════════════╣");
-    Console.WriteLine("║  1 — Часть 1: Стек (свой связный список)            ║");
-    Console.WriteLine("║  2 — Часть 2: Очередь (своя + Queue<T>)             ║");
-    Console.WriteLine("║  3 — Часть 3: Алгоритмы постфиксных вычислений      ║");
-    Console.WriteLine("║  4 — Часть 4: Алгоритмы связных списков (5–8)       ║");
-    Console.WriteLine("║  0 — Выход                                          ║");
-    Console.WriteLine("╚══════════════════════════════════════════════════════╝");
+    const int W = 58;
+    static string Line(string text) => "║" + text.PadRight(W) + "║";
+    Console.WriteLine("╔" + new string('═', W) + "╗");
+    Console.WriteLine(Line("   Практическое занятие №3: Динамические структуры"));
+    Console.WriteLine("╠" + new string('═', W) + "╣");
+    Console.WriteLine(Line("  1 — Часть 1: Стек (свой связный список)"));
+    Console.WriteLine(Line("  2 — Часть 2: Очередь (своя + Queue<T>)"));
+    Console.WriteLine(Line("  3 — Часть 1, п.4: Постфиксные вычисления"));
+    Console.WriteLine(Line("  4 — Часть 4: Алгоритмы связных списков"));
+    Console.WriteLine(Line("  0 — Выход"));
+    Console.WriteLine("╚" + new string('═', W) + "╝");
 }

@@ -1,8 +1,8 @@
 namespace DynamicStructures.Part2_Queue;
 
 /// <summary>
-/// Очередь (FIFO), реализованная через собственный односвязный список.
-/// Поддерживает операции: Enqueue, Dequeue, Peek, IsEmpty, Print.
+/// Очередь (FIFO), реализованная через собственный односвязный список
+/// с указателями на начало и конец. Enqueue, Dequeue, Peek, IsEmpty — O(1); Print — O(n).
 /// </summary>
 /// <typeparam name="T">Тип элементов очереди.</typeparam>
 public class LinkedQueue<T>
@@ -17,6 +17,9 @@ public class LinkedQueue<T>
         _tail = null;
         _count = 0;
     }
+
+    /// <summary>Количество элементов в очереди.</summary>
+    public int Count => _count;
 
     /// <summary>Добавить элемент в конец очереди.</summary>
     public void Enqueue(T value)
@@ -56,12 +59,17 @@ public class LinkedQueue<T>
     /// <summary>Проверить, пуста ли очередь.</summary>
     public bool IsEmpty() => _head is null;
 
-    /// <summary>Вывести содержимое очереди от начала к концу.</summary>
-    public void Print()
+    /// <summary>
+    /// Вывести содержимое очереди от начала к концу.
+    /// По умолчанию печатает в консоль; можно передать другой TextWriter (например, TextWriter.Null).
+    /// </summary>
+    public void Print(TextWriter? output = null)
     {
+        var w = output ?? Console.Out;
+
         if (IsEmpty())
         {
-            Console.WriteLine("  [очередь пуста]");
+            w.WriteLine("  [очередь пуста]");
             return;
         }
 
@@ -74,7 +82,7 @@ public class LinkedQueue<T>
             if (current.Next is not null) parts.Append(" → ");
             current = current.Next;
         }
-        Console.WriteLine(parts.ToString());
-        Console.WriteLine($"  Всего элементов: {_count}");
+        w.WriteLine(parts.ToString());
+        w.WriteLine($"  Всего элементов: {_count}");
     }
 }

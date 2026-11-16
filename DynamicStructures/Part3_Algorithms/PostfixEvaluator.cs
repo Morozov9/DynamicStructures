@@ -1,83 +1,147 @@
+using System.Globalization;
 using DynamicStructures.Part1_Stack;
 
 namespace DynamicStructures.Part3_Algorithms;
 
 /// <summary>
-/// Алгоритм вычисления арифметического выражения в постфиксной (обратной польской) записи.
+/// Вычисление арифметического выражения в постфиксной (обратной польской) записи
+/// с помощью стека на собственном связном списке (LinkedStack).
 ///
-/// Поддерживаемые операторы:
-///   Бинарные:  +  -  *  :  ^
-///   Унарные:   ln  cos  sin  sqrt  )
+/// Поддерживаемые операции:
+///   Бинарные:  +  -  *  :  (или /)  ^
+///   Унарные:   ln  cos  sin  sqrt  и унарный минус (токен ")" — как в ТЗ; также принимается "~")
 ///
-/// Ввод: токены через пробел, например:
-///   7 8 + 3 2 + /   →   (7+8) / (3+2) = 3
+/// Токены разделяются пробелами. Пример: 7 8 + 3 2 + /   →   3
 ///
-/// Оценка сложности: O(n), где n — количество токенов.
-/// Каждый токен обрабатывается ровно один раз.
+/// ОЦЕНКА СЛОЖНОСТИ:
+///   Каждый токен обрабатывается ровно один раз, на токен приходится не более 3 операций со
+///   стеком (число: 1 Push; унарная операция: Pop + Push; бинарная: 2 Pop + Push), каждая за O(1),
+///   плюс O(1) на определение вида токена (HashSet, разбор числа).
+///   Итого T(n) ≤ c·n  =>  T(n) = O(n), где n — число токенов.
+///   Память: максимум стека — число операндов, ожидающих операции, в худшем случае
+///   (n+1)/2 элементов  =>  O(n); для выражений вида «1 1 + 1 + …» — O(1).
 /// </summary>
 public static class PostfixEvaluator
 {
-    private static readonly HashSet<string> BinaryOps = new() { "+", "-", "*", ":", "/" , "^" };
-    private static readonly HashSet<string> UnaryOps  = new() { "ln", "cos", "sin", "sqrt", ")" };
+    /// <summary>Токен унарного минуса в постфиксной записи (по ТЗ — «)»).</summary>
+    public const string UnaryMinus = ")";
+
+    private static readonly HashSet<string> BinaryOps = new() { "+", "-", "*", ":", "/", "^" };
+    private static readonly HashSet<string> UnaryOps = new() { "ln", "cos", "sin", "sqrt", UnaryMinus, "~" };
 
     /// <summary>Вычислить постфиксное выражение.</summary>
-    /// <param name="expression">Строка с токенами, разделёнными пробелом.</param>
-    /// <returns>Результат вычисления.</returns>
-    public static double Evaluate(string expression)
+    public static double Evaluate(string expression) => Evaluate(expression, out _);
+
+    /// <summary>
+    /// Вычислить постфиксное выражение и вернуть число выполненных операций Push/Pop
+    /// (нужно для эмпирической проверки оценки сложности).
+    /// </summary>
+    /// <exception cref="FormatException">Некорректное выражение (неизвестный токен, не хватает/лишние операнды).</exception>
+    /// <exception cref="ArithmeticException">Недопустимая операция (деление на 0, ln от x ≤ 0, sqrt от x &lt; 0 и т.п.).</exception>
+    public static double Evaluate(string expression, out long stackOps)
     {
         var stack = new LinkedStack<double>();
-        string[] tokens = expression.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        long ops = 0;
+        string[] tokens = expression.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+
+        if (tokens.Length == 0)
+            throw new FormatException("Выражение пусто.");
 
         foreach (string token in tokens)
         {
-            if (double.TryParse(token, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out double number))
+            if (TryParseNumber(token, out double number))
             {
-                // Число — кладём на стек
                 stack.Push(number);
+                ops++;
             }
             else if (BinaryOps.Contains(token))
             {
-                // Бинарная операция: извлекаем два операнда
-                double b = stack.Pop();
-                double a = stack.Pop();
-                double result = token switch
+                double b = PopOperand(stack, token);
+                double a = PopOperand(stack, token);
+
+                double result;
+                switch (token)
                 {
-                    "+" => a + b,
-                    "-" => a - b,
-                    "*" => a * b,
-                    ":" or "/" => b == 0
-                        ? throw new DivideByZeroException("Деление на ноль.")
-                        : a / b,
-                    "^" => Math.Pow(a, b),
-                    _ => throw new InvalidOperationException($"Неизвестный оператор: {token}")
-                };
+                    case "+": result = a + b; break;
+                    case "-": result = a - b; break;
+                    case "*": result = a * b; break;
+                    case ":":
+                    case "/":
+                        if (b == 0) throw new DivideByZeroException("Деление на ноль.");
+                        result = a / b;
+                        break;
+                    case "^": result = Math.Pow(a, b); break;
+                    default: throw new FormatException($"Неизвестный оператор: '{token}'.");
+                }
+
+                CheckResult(result, token);
                 stack.Push(result);
+                ops += 3;
             }
             else if (UnaryOps.Contains(token))
             {
-                // Унарная операция: извлекаем один операнд
-                double a = stack.Pop();
-                double result = token switch
+                double a = PopOperand(stack, token);
+
+                double result;
+                switch (token)
                 {
-                    "ln"   => Math.Log(a),
-                    "cos"  => Math.Cos(a),
-                    "sin"  => Math.Sin(a),
-                    "sqrt" => Math.Sqrt(a),
-                    ")"    => -a, // унарный минус в постфиксной записи
-                    _ => throw new InvalidOperationException($"Неизвестный оператор: {token}")
-                };
+                    case "ln":
+                        if (a <= 0) throw new ArithmeticException("ln определён только для x > 0.");
+                        result = Math.Log(a);
+                        break;
+                    case "cos": result = Math.Cos(a); break;
+                    case "sin": result = Math.Sin(a); break;
+                    case "sqrt":
+                        if (a < 0) throw new ArithmeticException("sqrt определён только для x ≥ 0.");
+                        result = Math.Sqrt(a);
+                        break;
+                    case UnaryMinus:
+                    case "~":
+                        result = -a;
+                        break;
+                    default: throw new FormatException($"Неизвестный оператор: '{token}'.");
+                }
+
+                CheckResult(result, token);
                 stack.Push(result);
+                ops += 2;
             }
             else
             {
-                throw new FormatException($"Неизвестный токен: '{token}'");
+                throw new FormatException($"Неизвестный токен: '{token}'.");
             }
         }
 
-        if (stack.IsEmpty())
-            throw new InvalidOperationException("Выражение пусто или некорректно.");
+        double answer = stack.Pop(); // стек не пуст: в выражении был хотя бы один токен, и каждая операция кладёт результат
+        ops++;
 
+        if (!stack.IsEmpty())
+            throw new FormatException("Лишние операнды: в выражении не хватает операций.");
+
+        stackOps = ops;
+        return answer;
+    }
+
+    private static double PopOperand(LinkedStack<double> stack, string op)
+    {
+        if (stack.IsEmpty())
+            throw new FormatException($"Недостаточно операндов для операции '{op}'.");
         return stack.Pop();
+    }
+
+    private static void CheckResult(double value, string op)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value))
+            throw new ArithmeticException($"Результат операции '{op}' не определён (NaN/∞).");
+    }
+
+    private static bool TryParseNumber(string token, out double value)
+    {
+        value = 0;
+        // Число обязано заканчиваться цифрой: так отсекаются "-", "+", "NaN", "Infinity"
+        if (!char.IsDigit(token[^1])) return false;
+
+        string t = token.Contains(',') ? token.Replace(',', '.') : token;
+        return double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
     }
 }

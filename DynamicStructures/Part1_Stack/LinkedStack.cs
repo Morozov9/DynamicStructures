@@ -3,6 +3,7 @@ namespace DynamicStructures.Part1_Stack;
 /// <summary>
 /// Стек, реализованный через собственный односвязный список.
 /// Поддерживает операции: Push, Pop, Top, IsEmpty, Print.
+/// Все операции, кроме Print, выполняются за O(1); Print — за O(n).
 /// </summary>
 /// <typeparam name="T">Тип элементов стека.</typeparam>
 public class LinkedStack<T>
@@ -15,6 +16,9 @@ public class LinkedStack<T>
         _top = null;
         _count = 0;
     }
+
+    /// <summary>Количество элементов в стеке.</summary>
+    public int Count => _count;
 
     /// <summary>Добавить элемент на вершину стека.</summary>
     public void Push(T value)
@@ -53,12 +57,17 @@ public class LinkedStack<T>
     /// <summary>Проверить, пуст ли стек.</summary>
     public bool IsEmpty() => _top is null;
 
-    /// <summary>Вывести содержимое стека от вершины к основанию.</summary>
-    public void Print()
+    /// <summary>
+    /// Вывести содержимое стека от вершины к основанию.
+    /// По умолчанию печатает в консоль; можно передать другой TextWriter (например, TextWriter.Null).
+    /// </summary>
+    public void Print(TextWriter? output = null)
     {
+        var w = output ?? Console.Out;
+
         if (IsEmpty())
         {
-            Console.WriteLine("  [стек пуст]");
+            w.WriteLine("  [стек пуст]");
             return;
         }
 
@@ -71,7 +80,7 @@ public class LinkedStack<T>
             if (current.Next is not null) parts.Append(" → ");
             current = current.Next;
         }
-        Console.WriteLine(parts.ToString());
-        Console.WriteLine($"  Всего элементов: {_count}");
+        w.WriteLine(parts.ToString());
+        w.WriteLine($"  Всего элементов: {_count}");
     }
 }
