@@ -1,0 +1,2 @@
+# Keep Windows launch scripts readable by cmd.exe after checkout.
+*.cmd text eol=crlf
