@@ -29,22 +29,20 @@ public static class ApplicationsRunner
             Console.WriteLine("║   Часть 3: Применение динамических структур  ║");
             Console.WriteLine("╚══════════════════════════════════════════════╝");
             Console.WriteLine("  1 — Список:  задача Иосифа Флавия (решение)");
-            Console.WriteLine("  2 — Список:  Иосиф Флавий — автопроверка списка по формуле");
-            Console.WriteLine("  3 — Очередь: заливка краской (Flood Fill)");
-            Console.WriteLine("  4 — Стек: разрешение файловых путей");
-            Console.WriteLine("  5 — Дерево: дерево решений (выбор транспорта)");
+            Console.WriteLine("  2 — Очередь: заливка краской (Flood Fill)");
+            Console.WriteLine("  3 — Стек: разрешение файловых путей");
+            Console.WriteLine("  4 — Дерево: дерево решений (выбор транспорта)");
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
             switch (ConsoleInput.ReadLine().Trim())
             {
                 case "1": RunJosephus(); break;
-                case "2": RunJosephusSelfCheck(); break;
-                case "3": RunFloodFill(); break;
-                case "4": RunFilePathResolver(); break;
-                case "5": RunDecisionTree(); break;
+                case "2": RunFloodFill(); break;
+                case "3": RunFilePathResolver(); break;
+                case "4": RunDecisionTree(); break;
                 case "0": back = true; break;
-                default: Console.WriteLine("  Введите число от 0 до 5."); break;
+                default: Console.WriteLine("  Введите число от 0 до 4."); break;
             }
         }
     }
@@ -80,7 +78,7 @@ public static class ApplicationsRunner
                           (byFormula == survivor ? "— совпало" : "— НЕ СОВПАЛО!"));
     }
 
-    private static void RunJosephusSelfCheck()
+    public static void RunJosephusSelfCheck()
     {
         int total = 0, wrong = 0;
         for (int n = 1; n <= 300; n++)

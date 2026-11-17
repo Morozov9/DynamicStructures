@@ -1,6 +1,5 @@
-﻿using DynamicStructures.Part1_Stack;
+using DynamicStructures.Part1_Stack;
 using DynamicStructures.Part2_Queue;
-using DynamicStructures.Part3_Algorithms;
 using DynamicStructures.Part3_Applications;
 using DynamicStructures.Part4_LinkedListAlgos;
 
@@ -40,15 +39,11 @@ while (running)
                 break;
 
             case 3:
-                Part3Runner.Run();
+                ApplicationsRunner.Run();
                 break;
 
             case 4:
                 Part4Runner.Run();
-                break;
-
-            case 5:
-                ApplicationsRunner.Run();
                 break;
 
             case 0:
@@ -57,7 +52,7 @@ while (running)
                 break;
 
             default:
-                Console.WriteLine("  Неверный выбор. Введите 0–5.\n");
+                Console.WriteLine("  Неверный выбор. Введите 0–4.\n");
                 break;
         }
     }
@@ -86,11 +81,10 @@ static void PrintMenu()
     Console.WriteLine("╔" + new string('═', W) + "╗");
     Console.WriteLine(Line("   Практическое занятие №3: Динамические структуры"));
     Console.WriteLine("╠" + new string('═', W) + "╣");
-    Console.WriteLine(Line("  1 — Часть 1: Стек (свой связный список)"));
+    Console.WriteLine(Line("  1 — Часть 1: Стек и постфиксные вычисления"));
     Console.WriteLine(Line("  2 — Часть 2: Очередь (своя + Queue<T>)"));
-    Console.WriteLine(Line("  3 — Часть 1, п.4: Постфиксные вычисления"));
+    Console.WriteLine(Line("  3 — Часть 3: Применение списка, очереди, стека, дерева"));
     Console.WriteLine(Line("  4 — Часть 4: Алгоритмы связных списков"));
-    Console.WriteLine(Line("  5 — Часть 3: Применение списка, очереди, стека, дерева"));
     Console.WriteLine(Line("  0 — Выход"));
     Console.WriteLine("╚" + new string('═', W) + "╝");
 }

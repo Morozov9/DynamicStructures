@@ -30,6 +30,7 @@ public static class StackRunner
             Console.WriteLine("╚══════════════════════════════════════╝");
             Console.WriteLine("  1 — Выполнить команды из файла (с выводом результата каждой операции)");
             Console.WriteLine("  2 — Замеры времени на наборах разного размера и состава");
+            Console.WriteLine("  3 — Постфиксные вычисления (вычисление, инфикс→постфикс, сложность)");
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
@@ -37,8 +38,9 @@ public static class StackRunner
             {
                 case "1": RunFromFile(); break;
                 case "2": RunBenchmark(); break;
+                case "3": DynamicStructures.Part3_Algorithms.Part3Runner.Run(); break;
                 case "0": back = true; break;
-                default: Console.WriteLine("  Введите 0, 1 или 2."); break;
+                default: Console.WriteLine("  Введите 0, 1, 2 или 3."); break;
             }
         }
     }
@@ -72,6 +74,12 @@ public static class StackRunner
         Console.WriteLine($"\n  Файл: {Path.GetFullPath(path)}");
         Console.WriteLine($"  Содержимое: {shown}");
         Console.WriteLine($"  Команд: {commands.Length}\n");
+        Console.WriteLine("  Обозначения команд:");
+        Console.WriteLine("    1,значение -> Push(elem)  - поместить элемент (число или слово) на вершину стека");
+        Console.WriteLine("    2          -> Pop()       - извлечь и вернуть верхний элемент со стека");
+        Console.WriteLine("    3          -> Top()       - просмотреть верхний элемент без извлечения");
+        Console.WriteLine("    4          -> isEmpty()   - проверить, пуст ли стек");
+        Console.WriteLine("    5          -> Print()     - напечатать все элементы стека (вершина -> основание)\n");
 
         // Выполнение с выводом результата каждой операции
         var sw1 = Stopwatch.StartNew();
@@ -238,3 +246,4 @@ public static class StackRunner
         return (Bench.Median(reads), Bench.Median(execs));
     }
 }
+

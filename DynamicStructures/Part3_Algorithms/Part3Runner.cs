@@ -26,7 +26,7 @@ public static class Part3Runner
             Console.WriteLine("\n╔══════════════════════════════════════════════╗");
             Console.WriteLine("║   Часть 1, п.4: Постфиксные вычисления       ║");
             Console.WriteLine("╚══════════════════════════════════════════════╝");
-            Console.WriteLine("  1 — Вычислить постфиксные выражения из файла");
+            Console.WriteLine("  1 — Вычислить постфиксные выражения из файла (с пошаговым объяснением на стеке)");
             Console.WriteLine("  2 — Перевести инфиксные выражения из файла в постфиксные");
             Console.WriteLine("  3 — Инфикс → постфикс → результат (файл с инфиксными выражениями)");
             Console.WriteLine("  4 — Оценка сложности (теория + замеры)");
@@ -45,7 +45,7 @@ public static class Part3Runner
         }
     }
 
-    // ── Вычисление постфиксного выражения ────────────────────────────────────
+    // ── Вычисление постфиксного выражения (с пошаговым объяснением) ─────────
 
     private static void RunPostfixEvaluator()
     {
@@ -54,13 +54,25 @@ public static class Part3Runner
         if (lines.Length == 0) return;
 
         Console.WriteLine($"\n  Файл: {Path.GetFullPath(path)}");
-        Console.WriteLine("  (унарный минус в постфиксе записывается токеном «)», например: 5 ) 3 +)\n");
+        Console.WriteLine("  (унарный минус в постфиксе записывается токеном «)», например: 5 ) 3 +)");
+        Console.WriteLine("  Для каждого выражения показаны пошаговые операции со стеком (как на рисунке в ТЗ):\n");
 
+        int exprIndex = 0;
         foreach (string line in lines)
         {
             if (string.IsNullOrWhiteSpace(line)) continue;
-            Console.Write($"  {line.Trim()}  →  ");
-            Console.WriteLine(Calculate(line));
+            exprIndex++;
+            string expr = line.Trim();
+            Console.WriteLine($"  Выражение {exprIndex}: {expr}");
+            try
+            {
+                double res = PostfixEvaluator.EvaluateWithExplanation(expr, step => Console.WriteLine(step));
+                Console.WriteLine($"  -> Результат: {res.ToString("G10", CultureInfo.InvariantCulture)}\n");
+            }
+            catch (Exception ex) when (ex is FormatException or ArithmeticException)
+            {
+                Console.WriteLine($"  -> Ошибка: {ex.Message}\n");
+            }
         }
     }
 

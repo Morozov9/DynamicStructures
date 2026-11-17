@@ -124,6 +124,124 @@ public static class PostfixEvaluator
         return answer;
     }
 
+    /// <summary>
+    /// Вычисляет постфиксное выражение с подробным пошаговым протоколированием
+    /// каждого действия над стеком (как на иллюстрации в методичке).
+    /// </summary>
+    public static double EvaluateWithExplanation(string expression, Action<string> log)
+    {
+        ArgumentNullException.ThrowIfNull(expression);
+        ArgumentNullException.ThrowIfNull(log);
+
+        var stack = new LinkedStack<double>();
+        string[] tokens = expression.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+
+        if (tokens.Length == 0)
+            throw new FormatException("Выражение пусто.");
+
+        int step = 0;
+        foreach (string token in tokens)
+        {
+            step++;
+            if (TryParseNumber(token, out double number))
+            {
+                CheckResult(number, token);
+                stack.Push(number);
+                log($"  Шаг {step,2}: Токен «{token}» (число) -> Push({FormatNum(number)}). Стек: {FormatStack(stack)}");
+            }
+            else if (BinaryOps.Contains(token))
+            {
+                double b = PopOperand(stack, token);
+                double a = PopOperand(stack, token);
+
+                double result;
+                string opName;
+                switch (token)
+                {
+                    case "+": result = a + b; opName = "сложение"; break;
+                    case "-": result = a - b; opName = "вычитание"; break;
+                    case "*": result = a * b; opName = "умножение"; break;
+                    case ":":
+                    case "/":
+                        if (b == 0) throw new DivideByZeroException("Деление на ноль.");
+                        result = a / b;
+                        opName = "деление";
+                        break;
+                    case "^": result = Math.Pow(a, b); opName = "возведение в степень"; break;
+                    default: throw new FormatException($"Неизвестный оператор: '{token}'.");
+                }
+
+                CheckResult(result, token);
+                stack.Push(result);
+                log($"  Шаг {step,2}: Токен «{token}» ({opName}) -> сняли {FormatNum(b)} и {FormatNum(a)}, {FormatNum(a)} {token} {FormatNum(b)} = {FormatNum(result)}, Push({FormatNum(result)}). Стек: {FormatStack(stack)}");
+            }
+            else if (UnaryOps.Contains(token))
+            {
+                double a = PopOperand(stack, token);
+
+                double result;
+                string opName;
+                switch (token)
+                {
+                    case "ln":
+                        if (a <= 0) throw new ArithmeticException("ln определён только для x > 0.");
+                        result = Math.Log(a);
+                        opName = "ln";
+                        break;
+                    case "cos": result = Math.Cos(a); opName = "cos"; break;
+                    case "sin": result = Math.Sin(a); opName = "sin"; break;
+                    case "sqrt":
+                        if (a < 0) throw new ArithmeticException("sqrt определён только для x ≥ 0.");
+                        result = Math.Sqrt(a);
+                        opName = "sqrt";
+                        break;
+                    case UnaryMinus:
+                    case "~":
+                        result = -a;
+                        opName = "унарный минус";
+                        break;
+                    default: throw new FormatException($"Неизвестный оператор: '{token}'.");
+                }
+
+                CheckResult(result, token);
+                stack.Push(result);
+                log($"  Шаг {step,2}: Токен «{token}» ({opName}) -> сняли {FormatNum(a)}, вычислили {FormatNum(result)}, Push({FormatNum(result)}). Стек: {FormatStack(stack)}");
+            }
+            else
+            {
+                throw new FormatException($"Неизвестный токен: '{token}'.");
+            }
+        }
+
+        double answer = stack.Pop();
+        if (!stack.IsEmpty())
+            throw new FormatException("Лишние операнды: в выражении не хватает операций.");
+
+        log($"  Итог: Pop() -> результат выражения равен {FormatNum(answer)}.");
+        return answer;
+    }
+
+    private static string FormatNum(double n) =>
+        n.ToString("G", CultureInfo.InvariantCulture);
+
+    private static string FormatStack(LinkedStack<double> stack)
+    {
+        if (stack.IsEmpty()) return "[пуст]";
+        // Снимем элементы во временный список и вернем обратно в стек
+        var list = new List<double>();
+        while (!stack.IsEmpty())
+            list.Add(stack.Pop());
+
+        // Восстанавливаем стек
+        for (int i = list.Count - 1; i >= 0; i--)
+            stack.Push(list[i]);
+
+        // list[0] - вершина (Top), list[^1] - основание (Bottom)
+        // Для визуализации дно -> вершина:
+        var bottomToTop = list.AsEnumerable().Reverse().Select(FormatNum);
+        return "[" + string.Join(", ", bottomToTop) + "] (вершина: " + FormatNum(list[0]) + ")";
+    }
+
     private static double PopOperand(LinkedStack<double> stack, string op)
     {
         if (stack.IsEmpty())

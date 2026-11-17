@@ -72,7 +72,13 @@ public static class QueueRunner
         if (shown.Length > 200) shown = shown[..200] + " ...";
         Console.WriteLine($"\n  Файл: {Path.GetFullPath(path)}");
         Console.WriteLine($"  Содержимое: {shown}");
-        Console.WriteLine($"  Команд: {commands.Length}");
+        Console.WriteLine($"  Команд: {commands.Length}\n");
+        Console.WriteLine("  Обозначения команд:");
+        Console.WriteLine("    1,значение -> вставка (Enqueue)              - поместить элемент (число или слово) в конец очереди");
+        Console.WriteLine("    2          -> удаление (Dequeue)             - извлечь и вернуть первый элемент из начала очереди");
+        Console.WriteLine("    3          -> просмотр начала очереди (Peek) - просмотреть первый элемент без удаления");
+        Console.WriteLine("    4          -> проверка на пустоту (isEmpty)  - проверить, пуста ли очередь");
+        Console.WriteLine("    5          -> печать (Print)                 - напечатать все элементы очереди (начало -> конец)");
 
         // Реализация 1: свой список
         Console.WriteLine("\n── Реализация 1: LinkedQueue (свой связный список) ──");
