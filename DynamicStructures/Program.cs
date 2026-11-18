@@ -46,13 +46,17 @@ while (running)
                 Part4Runner.Run();
                 break;
 
+            case 5:
+                ApplicationsRunner.RunBinaryTreeDrawing();
+                break;
+
             case 0:
                 running = false;
                 Console.WriteLine("\nДо свидания!");
                 break;
 
             default:
-                Console.WriteLine("  Неверный выбор. Введите 0–4.\n");
+                Console.WriteLine("  Неверный выбор. Введите 0–5.\n");
                 break;
         }
     }
@@ -85,6 +89,7 @@ static void PrintMenu()
     Console.WriteLine(Line("  2 — Часть 2: Очередь (своя + Queue<T>)"));
     Console.WriteLine(Line("  3 — Часть 3: Применение списка, очереди, стека, дерева"));
     Console.WriteLine(Line("  4 — Часть 4: Алгоритмы связных списков"));
+    Console.WriteLine(Line("  5 — Дерево: рисунок по уровням"));
     Console.WriteLine(Line("  0 — Выход"));
     Console.WriteLine("╚" + new string('═', W) + "╝");
 }

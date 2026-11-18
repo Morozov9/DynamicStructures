@@ -4,7 +4,7 @@ chcp 65001 >nul
 title DynamicStructures
 cd /d "%~dp0"
 
-dotnet run --project "%~dp0DynamicStructures\DynamicStructures.csproj" --configuration Release --disable-build-servers --artifacts-path "%~dp0artifacts\app"
+dotnet run --project "%~dp0DynamicStructures\DynamicStructures.csproj" --configuration Release --disable-build-servers --artifacts-path "%~dp0artifacts\launcher"
 set "appExitCode=%ERRORLEVEL%"
 if not "%appExitCode%"=="0" (
     echo.

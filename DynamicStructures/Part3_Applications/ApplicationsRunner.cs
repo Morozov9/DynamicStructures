@@ -32,6 +32,7 @@ public static class ApplicationsRunner
             Console.WriteLine("  2 — Очередь: заливка краской (Flood Fill)");
             Console.WriteLine("  3 — Стек: разрешение файловых путей");
             Console.WriteLine("  4 — Дерево: дерево решений (выбор транспорта)");
+            Console.WriteLine("  5 — Дерево: рисунок по уровням");
             Console.WriteLine("  0 — Назад");
             Console.Write("  > ");
 
@@ -41,8 +42,9 @@ public static class ApplicationsRunner
                 case "2": RunFloodFill(); break;
                 case "3": RunFilePathResolver(); break;
                 case "4": RunDecisionTree(); break;
+                case "5": RunBinaryTreeDrawing(); break;
                 case "0": back = true; break;
-                default: Console.WriteLine("  Введите число от 0 до 4."); break;
+                default: Console.WriteLine("  Введите число от 0 до 5."); break;
             }
         }
     }
@@ -204,6 +206,16 @@ public static class ApplicationsRunner
         {
             Console.WriteLine($"  Ошибка пути: {ex.Message}");
         }
+    }
+
+    internal static void RunBinaryTreeDrawing()
+    {
+        const string sample = "ABD*G***CE**FH**J**";
+        Console.WriteLine("\n  Введите дерево в порядке «узел, левое поддерево, правое поддерево».");
+        Console.WriteLine($"  * — пустая ветвь, Enter — пример {sample}.");
+        Console.Write("  > ");
+        string input = ConsoleInput.ReadLine().Trim();
+        BinaryTreeDrawing.Print(input.Length == 0 ? sample : input, Console.Out);
     }
 
     private static void RunDecisionTree()
